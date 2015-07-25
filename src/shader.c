@@ -1,5 +1,6 @@
 #include "shader.h"
 #include <stdlib.h>
+#include "../deps/linearAlg.h"
 
 static void check_shader_error(GLuint shader, GLuint flag, int is_program,
 			       char *error_message)
@@ -109,6 +110,9 @@ struct shader *shader_new(char *file_name)
 	glValidateProgram(new_shader->m_program);
 	check_shader_error(new_shader->m_program, GL_VALIDATE_STATUS, 1,
 			   "Error: Program is invalid: ");
+
+	new_shader->m_uniforms[TRANSFORM_U] = glGetUniformLocation(new_shader->m_program,
+								   "transform");
 	free(fn_vs);
 	free(fn_fs);
 	return new_shader;
@@ -129,4 +133,15 @@ void shader_free(struct shader *shader)
 void shader_bind(struct shader *shader)
 {
 	glUseProgram(shader->m_program);
+}
+
+void shader_update(struct shader *shader,
+		   struct transform *transform)
+{
+	/* rotateX(&transform->model, 0.05); */
+	glUniformMatrix4fv(shader->m_uniforms[TRANSFORM_U], 1,
+			   GL_TRUE,
+			   transform_get_model(transform));
+	/* glUniformMatrix4fv(shader->m_uniforms[TRANSFORM_U], 1, */
+	/* 		   GL_TRUE, ); */
 }
