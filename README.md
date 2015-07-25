@@ -3,7 +3,7 @@
 
 A pure c library based off [Benny's](https://github.com/BennyQBD) [series on modern OpenGL](https://www.youtube.com/watch?v=ftiKrP3gW3k&index=1&list=PLEETnX-uPtBXT9T-hD0Bj31DSnwio-ywh). 
 
-This libraries owes it existance to many great libraries written in C and usable in C that everyone uses from C++.
+This library owes it existance to many great libraries written in C and usable in C that everyone uses from C++.
 * [SDL](https://www.libsdl.org/)
 * [GLEW](http://glew.sourceforge.net/)
 
