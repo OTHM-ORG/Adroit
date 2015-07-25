@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <math.h>
 #include "vecs.h"
 #include "display.h"
 #include "shader.h"
@@ -31,9 +32,9 @@ int main(void)
 
 	struct texture *t = texture_new("./res/bricks.jpg");
 
-	struct transform *tr = transform_new(vec3_new(-2.0, 0.5, 0.5),
-					     vec3_new(0.5, 0, 0),
-					     vec3_new(1.5, 1, 1));
+	struct transform *tr = transform_new(vec3_new(1, 0, 1),
+					     vec3_new(0, 0, 0),
+					     vec3_new(1, 1, 1));
 
 	while (!d->is_closed) {
 		clear(0.0, 0.15, 0.3, 1.0);
@@ -42,7 +43,12 @@ int main(void)
 		shader_update(s, tr);
 		mesh_draw(m);
 		update(d);
-		tr->m_pos.x += 0.01f;
+		tr->m_pos.x = sinf(counter);
+		tr->m_rot.z = counter;
+		tr->m_scale.x = cosf(counter);
+		tr->m_scale.y = cosf(counter);
+		tr->m_scale.z = cosf(counter);
+		counter += 0.01f;
 	}
 	display_free(d);
 	shader_free(s);
