@@ -40,6 +40,7 @@ Vector4 mulmatvec4(Matrix* m,  Vector4* v);
 void normalizevec4(Vector4* v);
 float dotvec4(Vector4 v1, Vector4 v2);
 Vector4 crossvec4(Vector4 v1, Vector4 v2);
+Vector4 addvec4(Vector4 v1, Vector4 v2);
 void rotateX(Matrix* m, float angle);
 void rotateY(Matrix* m, float angle);
 void rotateZ(Matrix* m, float angle);
@@ -49,6 +50,6 @@ void translate( Matrix* m, float x, float y, float z);
 Matrix perspective(float fovy, float aspect_ratio, float near_plane, float far_plane);
 Matrix orthogonal(float left, float right, float bottom, float top);
 
-Matrix lookAt(Vector4 pos, Vector4 dir);
+Matrix lookAt(Vector4 pos, Vector4 dir, Vector4 up);
 
 #endif

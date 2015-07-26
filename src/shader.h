@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <GL/glew.h>
 #include "transform.h"
+#include "camera.h"
 
 #define NUM_SHADERS 2
 
@@ -25,6 +26,7 @@ struct shader *shader_new(char *file_name);
 void shader_bind(struct shader *shader);
 void shader_free(struct shader *shader);
 void shader_update(struct shader *shader,
-		   struct transform *transform);
+		   struct transform *transform,
+		   struct camera *camera);
 
 #endif

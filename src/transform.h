@@ -18,7 +18,7 @@ struct transform *transform_new(struct vec3 pos,
 				struct vec3 rot,
 				struct vec3 scale);
 void transform_free(struct transform *transform);
-float *transform_get_model(struct transform *transform);
+Matrix *transform_get_model(struct transform *transform);
 
 
 #endif

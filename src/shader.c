@@ -136,12 +136,33 @@ void shader_bind(struct shader *shader)
 }
 
 void shader_update(struct shader *shader,
-		   struct transform *transform)
+		   struct transform *transform,
+		   struct camera *camera)
 {
+	Matrix projecton = camera_get_view_projection(camera);
+	/* projecton.m[15] = 1.0f; */
+	Matrix model = *transform_get_model(transform);
+	Matrix result = multiplymat4(&projecton, &model);
 	/* rotateX(&transform->model, 0.05); */
+	/* glUniformMatrix4fv(shader->m_uniforms[TRANSFORM_U], 1, */
+	/* 		   GL_TRUE, */
+	/* 		   multiplymat4(&projecton, */
+	/* 				transform_get_model(transform)).m); */
+	/* projecton.m[3] = 0.5; */
+	/* projecton.m[7] = 0.5; */
+
+	/* printf("%f, %f, %f, %f\n" */
+	/*        "%f, %f, %f, %f\n" */
+	/*        "%f, %f, %f, %f\n" */
+	/*        "%f, %f, %f, %f\n", */
+	/*        projecton.m[0], projecton.m[1], projecton.m[2], projecton.m[3], projecton.m[4], */
+	/*        projecton.m[5], projecton.m[6], projecton.m[7], projecton.m[8], projecton.m[9], */
+	/*        projecton.m[10], projecton.m[11], projecton.m[12], projecton.m[13], projecton.m[14], */
+	/*        projecton.m[15]); */
+	/* getchar(); */
 	glUniformMatrix4fv(shader->m_uniforms[TRANSFORM_U], 1,
-			   GL_TRUE,
-			   transform_get_model(transform));
+			   GL_FALSE,
+			   &(result.m[0]));
 	/* glUniformMatrix4fv(shader->m_uniforms[TRANSFORM_U], 1, */
 	/* 		   GL_TRUE, ); */
 }

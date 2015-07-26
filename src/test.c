@@ -5,6 +5,7 @@
 #include "shader.h"
 #include "mesh.h"
 #include "texture.h"
+#include "camera.h"
 
 int main(void)
 {
@@ -32,22 +33,29 @@ int main(void)
 
 	struct texture *t = texture_new("./res/bricks.jpg");
 
-	struct transform *tr = transform_new(vec3_new(1, 0, 1),
-					     vec3_new(0, 0, 0),
-					     vec3_new(1, 1, 1));
+	struct transform *tr = transform_new(vec3_new(0, 0, 0),
+					     vec3_new(1, 0, 0),
+					     vec3_new(0.5, 0.5, 0.5));
 
+	struct camera *cam = camera_new(vec3_new(0, 0, -0.75), 70.0f,
+					600.0f/800.0f, 0.1f, 1000.0f);
 	while (!d->is_closed) {
 		clear(0.0, 0.15, 0.3, 1.0);
+
+		/* tr->m_pos.x = sinf(counter); */
+		/* tr->m_pos.z = counter; */
 		shader_bind(s);
 		texture_bind(t, 0);
-		shader_update(s, tr);
+		shader_update(s, tr, cam);
 		mesh_draw(m);
 		update(d);
-		tr->m_pos.x = sinf(counter);
-		tr->m_rot.z = counter;
-		tr->m_scale.x = cosf(counter);
-		tr->m_scale.y = cosf(counter);
-		tr->m_scale.z = cosf(counter);
+		cam->m_position.z = cosf(counter) - 2;
+		cam->m_position.x = sinf(counter);
+		/* tr->m_rot.x = counter; */
+		/* tr->m_rot.y = sinf(counter); */
+		/* tr->m_scale.x = cosf(counter); */
+		/* tr->m_scale.y = cosf(counter); */
+		/* tr->m_scale.z = cosf(counter); */
 		counter += 0.01f;
 	}
 	display_free(d);

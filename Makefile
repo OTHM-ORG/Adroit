@@ -5,6 +5,7 @@ HEADER_FILES = \
 	src/mesh.h       \
 	src/texture.h    \
 	src/transform.h  \
+	src/camera.h     \
 	deps/linearAlg.h
 
 SRC_FILES = \
@@ -15,6 +16,7 @@ SRC_FILES = \
 	src/mesh.c       \
 	src/texture.c    \
 	src/transform.c  \
+	src/camera.c     \
 	deps/linearAlg.c
 OBJ_PATH = bin
 OBJ_FILES = $(patsubst %,$(OBJ_PATH)/%,$(notdir $(SRC_FILES:.c=.o)))

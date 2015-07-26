@@ -17,7 +17,7 @@ struct transform *transform_new(struct vec3 pos,
 	return new_transform;
 }
 
-float *transform_get_model(struct transform *transform)
+Matrix *transform_get_model(struct transform *transform)
 {
 	Matrix actual = transform->model;
 	actual.m[3] = transform->m_pos.x;
@@ -35,7 +35,7 @@ float *transform_get_model(struct transform *transform)
 	rotateZ(&actual,
 		transform->m_rot.z);
 	transform->actual = actual;
-	return transform->actual.m;
+	return &transform->actual;
 }
 
 void transform_free(struct transform *transform)

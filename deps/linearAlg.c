@@ -4,7 +4,7 @@
 
 static const double PI = 3.14159265358979323846;
 
-Matrix multiplymat4( Matrix* m1,  Matrix* m2) {
+Matrix multiplymat4(Matrix* m1,  Matrix* m2) {
 	Matrix out = IDENTITY_MATRIX;
 	unsigned int row, column, row_offset;
 
@@ -53,6 +53,25 @@ Vector4 crossvec4(Vector4 v1, Vector4 v2) {
 	out.m[2] = v1.m[0]*v2.m[1] - v1.m[1]*v2.m[0];
 	return out;
 }
+
+Vector4 addvec4(Vector4 v1, Vector4 v2)
+{
+	Vector4 out = {{0}};
+	out.m[0] = v1.m[0] + v2.m[0];
+	out.m[1] = v1.m[1] + v2.m[1];
+	out.m[2] = v1.m[2] + v2.m[2];
+	return out;
+}
+
+Vector4 minusvec4(Vector4 v1, Vector4 v2)
+{
+	Vector4 out = {{0}};
+	out.m[0] = v1.m[0] - v2.m[0];
+	out.m[1] = v1.m[1] - v2.m[1];
+	out.m[2] = v1.m[2] - v2.m[2];
+	return out;
+}
+
 void rotateX( Matrix* m, float angle) {
 	Matrix rotation = IDENTITY_MATRIX;
 	float sine = (float)sin(angle);
@@ -108,20 +127,34 @@ void translate( Matrix* m, float x, float y, float z) {
 	memcpy(m->m, multiplymat4(m, &translation).m, sizeof(m->m));
 }
 
+float degs_to_rads(float degrees)
+{
+	return degrees * (PI / 180.0f);
+}
+
 Matrix perspective(float fovy, float aspect_ratio, float near_plane, float far_plane) {
 	Matrix out = { { 0 } };
 
-	float
-		y_scale = (float)(1/cos(fovy * PI / 360)),
-		x_scale = y_scale / aspect_ratio,
-		frustum_length = far_plane - near_plane;
+	/* float */
+	/* 	y_scale = (float)(1/cos(fovy * PI / 360)), */
+	/* 	x_scale = y_scale / aspect_ratio, */
+	/* 	frustum_length = far_plane - near_plane; */
 
-	out.m[0] = x_scale;
-	out.m[5] = y_scale;
-	out.m[10] = -((far_plane + near_plane) / frustum_length);
-	out.m[11] = -1;
-	out.m[14] = -((2 * near_plane * far_plane) / frustum_length);
-	
+	/* out.m[0] = x_scale; */
+	/* out.m[5] = y_scale; */
+	/* out.m[10] = -((far_plane + near_plane) / frustum_length); */
+	/* out.m[11] = -1; */
+	/* out.m[14] = -((2 * near_plane * far_plane) / frustum_length); */
+
+	/* return out; */
+
+	float rad = degs_to_rads(fovy);
+	float tanHalfFovy = tan(rad / 2.0f);
+	out.m[0]  = 1.0f / (aspect_ratio * tanHalfFovy);
+	out.m[5]  = 1.0f / (tanHalfFovy);
+	out.m[10] = - (far_plane + near_plane) / (far_plane - near_plane);
+	out.m[14] = - 1;
+	out.m[11] = - (2.0f * far_plane * near_plane) / (far_plane * near_plane);
 	return out;
 }
 
@@ -136,29 +169,66 @@ Matrix orthogonal(float left, float right, float bottom, float top) {
 	return out;
 }
 
-Matrix lookAt(Vector4 pos, Vector4 dir) {
-	Vector4 f = dir;
+Matrix lookAt(Vector4 pos, Vector4 dir, Vector4 up) {
+	Matrix out = {{ 1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1,
+			1, 1, 1, 1 }};
+
+	Vector4 f = minusvec4(dir, pos);
 	normalizevec4(&f);
-	Vector4 u = {{0, 1, 0, 0}};
-	Vector4 s = crossvec4(f, u);
+	Vector4 s = crossvec4(f, up);
 	normalizevec4(&s);
-	u = crossvec4(s, f);
+	Vector4 u = crossvec4(s, f);
 
-	Matrix out = IDENTITY_MATRIX;
 	out.m[0] = s.x;
-	out.m[4] = s.y;
-	out.m[8] = s.z;
+	out.m[1] = s.y;
+	out.m[2] = s.z;
 
-	out.m[1] = u.x;
+	out.m[4] = u.x;
 	out.m[5] = u.y;
-	out.m[9] = u.z;
+	out.m[6] = u.z;
 
-	out.m[2] = -f.x;
-	out.m[6] = -f.y;
+	out.m[8]  = -f.x;
+	out.m[9]  = -f.y;
 	out.m[10] = -f.z;
 
-	out.m[12] = -dotvec4(s, pos);
-	out.m[13] = -dotvec4(u, pos);
-	out.m[14] =  dotvec4(f, pos);
+	out.m[3]  = -dotvec4(s, pos);
+	out.m[7]  = -dotvec4(u, pos);
+	out.m[11] =  dotvec4(f, pos);
+
 	return out;
+	/* Vector4 f = dir; */
+	/* normalizevec4(&f); */
+	/* Vector4 u = {{0, 1, 0, 0}}; */
+	/* /\* Vector4 u = up; *\/ */
+	/* /\* normalizevec4(&u); *\/ */
+	/* Vector4 s = crossvec4(f, u); */
+	/* normalizevec4(&s); */
+	/* u = crossvec4(s, f); */
+	/* Vector4 f = minusvec4(dir, pos); */
+	/* normalizevec4(&f); */
+	/* Vector4 u = up; */
+	/* normalizevec4(&up); */
+	/* Vector4 s = crossvec4(f, u); */
+	/* normalizevec4(&s); */
+	/* u = crossvec4(s, f); */
+
+	/* Matrix out = IDENTITY_MATRIX; */
+	/* out.m[0] = s.x; */
+	/* out.m[4] = s.y; */
+	/* out.m[8] = s.z; */
+
+	/* out.m[1] = u.x; */
+	/* out.m[5] = u.y; */
+	/* out.m[9] = u.z; */
+
+	/* out.m[2] = -f.x; */
+	/* out.m[6] = -f.y; */
+	/* out.m[10] = -f.z; */
+
+	/* out.m[12] = -dotvec4(s, pos); */
+	/* out.m[13] = -dotvec4(u, pos); */
+	/* out.m[14] =  dotvec4(f, pos); */
+	/* return out; */
 }
