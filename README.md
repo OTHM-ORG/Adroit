@@ -1,3 +1,4 @@
+[![License MIT](https://img.shields.io/github/license/mashape/apistatus.svg)](http://mit-license.org/)
 # othm-Adroit
 ***Adroit: quick or skillful; adept in action or thought.***
 
